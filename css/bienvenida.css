@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Sansation", sans-serif;
+}
+
+
+
+
+header {
+    width: 100%;
+    height: 566px;
+
+    background-image: url(../img/Vector\ 1.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes flotar {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+#logo {
+    height: auto;
+    max-width: 280px;
+    height: auto;
+    animation: flotar 3s ease-in-out infinite;
+}
+
+
+.content {
+    padding: 32px 28px 0 28px;
+}
+
+
+.content h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #8c8c8c;
+}
+
+/* Botón flotante al pie */
+footer {
+    margin-top: auto;
+    padding: 120px 28px 24px 28px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-continuar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none; 
+}
+
+.btn-continuar span {
+    font-size: 14px;
+    color: #8c8c8c;
+}
+
+.btn-continuar svg {
+    width: 28px;
+    height: 28px;
+}
