@@ -1,0 +1,621 @@
+/* ==========================================
+   TOKENS
+   ========================================== */
+
+:root {
+    --paper: #eee7d6;
+    --surface: #fbf8f0;
+    --ink: #2a241d;
+    --ink-soft: #6b6156;
+    --line: #c9bfa9;
+    --stamp: #2b5d53;
+    --stamp-dark: #1e453d;
+    --stamp-tint: #e2ece9;
+    --error: #a23b2c;
+    --error-tint: #f5e6e2;
+
+    --font-display: "Space Grotesk", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+        radial-gradient(var(--line) 0.6px, transparent 0.6px);
+    background-size: 18px 18px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    line-height: 1.5;
+    padding: 40px 20px 80px;
+}
+
+h1, h2 {
+    font-family: var(--font-display);
+    margin: 0;
+}
+
+button {
+    font-family: var(--font-display);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+.app-header {
+    max-width: 640px;
+    margin: 0 auto 32px;
+    text-align: left;
+}
+
+.brand {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--stamp);
+    margin: 0 0 6px;
+}
+
+.app-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 10px 0 0;
+}
+
+/* ==========================================
+   TICKET / CONTENEDOR PRINCIPAL
+   ========================================== */
+
+.ticket {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 var(--line);
+}
+
+.panel {
+    padding: 28px;
+    border-bottom: 1px dashed var(--line);
+}
+
+.panel:last-child {
+    border-bottom: none;
+}
+
+.panel-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.panel-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ==========================================
+   ZONA DE ARRASTRE
+   ========================================== */
+
+.drop-zone {
+    border: 1.5px dashed var(--ink-soft);
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.drop-zone:focus-visible {
+    outline: 2px solid var(--stamp);
+    outline-offset: 3px;
+}
+
+.drop-zone.drag-over {
+    border-color: var(--stamp);
+    background: var(--stamp-tint);
+}
+
+.drop-zone-text {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0;
+}
+
+.drop-zone-hint {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 4px 0 20px;
+}
+
+.drop-zone-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================
+   BOTONES
+   ========================================== */
+
+.btn {
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--stamp);
+    outline-offset: 2px;
+}
+
+.btn-primary {
+    background: var(--stamp);
+    border-color: var(--stamp);
+    color: var(--surface);
+}
+
+.btn-primary:hover {
+    background: var(--stamp-dark);
+    border-color: var(--stamp-dark);
+}
+
+.btn-primary:disabled {
+    background: var(--line);
+    border-color: var(--line);
+    color: var(--ink-soft);
+    cursor: not-allowed;
+}
+
+.btn-secondary:hover {
+    background: var(--ink);
+    color: var(--surface);
+}
+
+.btn-ghost {
+    border-color: var(--line);
+    color: var(--ink-soft);
+}
+
+.btn-ghost:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+/* ==========================================
+   LISTA DE ARCHIVOS
+   ========================================== */
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.file-preview {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+}
+
+.file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-size {
+    margin: 2px 0 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+}
+
+.remove-file {
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+
+.remove-file:hover {
+    color: var(--error);
+}
+
+/* ==========================================
+   PROGRESO
+   ========================================== */
+
+.progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+}
+
+.counter {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.progress-track {
+    height: 8px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--stamp);
+    transition: width 0.2s ease;
+}
+
+/* ==========================================
+   RESULTADOS
+   ========================================== */
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.result-card {
+    border: 1px solid var(--line);
+    padding: 18px;
+    background: var(--paper);
+}
+
+.result-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    word-break: break-word;
+}
+
+.image-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.image-panel h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+}
+
+.image-panel img {
+    width: 100%;
+    display: block;
+    border: 1px solid var(--line);
+}
+
+.ocr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+}
+
+.ocr-header h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.confidence {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--stamp-dark);
+}
+
+.ocr-text {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.result-error {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--error);
+    background: var(--error-tint);
+    border: 1px solid var(--error);
+    padding: 10px 12px;
+}
+
+/* ==========================================
+   PIE
+   ========================================== */
+
+.app-footer {
+    max-width: 640px;
+    margin: 24px auto 0;
+    text-align: left;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 520px) {
+    body {
+        padding: 24px 14px 60px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .image-comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .drop-zone-actions {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================
+   OCR v2 / EXTRACCION ESTRUCTURADA
+   ========================================== */
+.processing-method {
+    margin: -8px 0 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+
+.result-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.ocr-text {
+    min-height: 220px;
+    line-height: 1.55;
+    white-space: pre;
+    overflow: auto;
+}
+
+.extraction-preview {
+    margin-top: 16px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    overflow-x: auto;
+}
+
+.extraction-preview h4 {
+    margin: 0 0 10px;
+    font-size: 13px;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+.product-table th,
+.product-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+}
+
+.product-table th {
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+@media (max-width: 520px) {
+    .result-actions {
+        flex-direction: column;
+    }
+
+    .result-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   SABOR v3 — AJUSTES DE INTERFAZ
+   ========================================== */
+.step-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--stamp-dark);
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.processing-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+
+.image-comparison-three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.image-panel img {
+    max-height: 620px;
+    object-fit: contain;
+    background: #fff;
+}
+
+.segmentation-info {
+    margin: 14px 0 16px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--stamp);
+    background: var(--stamp-tint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.result-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.extraction-preview {
+    margin-top: 16px;
+    border-top: 1px dashed var(--line);
+    padding-top: 16px;
+}
+
+.extraction-preview h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--surface);
+}
+
+.product-table th,
+.product-table td {
+    border: 1px solid var(--line);
+    padding: 8px 7px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.product-table th {
+    background: var(--paper);
+    font-weight: 600;
+}
+
+.product-table td:nth-child(3),
+.product-table td:nth-child(5),
+.product-table td:nth-child(6) {
+    white-space: nowrap;
+}
+
+.json-note,
+.empty-products {
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.saved-state {
+    border-color: var(--stamp);
+    background: var(--stamp-tint);
+}
+
+.pipeline {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.pipeline span {
+    border: 1px solid var(--line);
+    padding: 4px 7px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-soft);
+    background: var(--surface);
+}
+
+.footer-note {
+    margin-top: 5px;
+    opacity: .85;
+}
+
+@media (max-width: 760px) {
+    .image-comparison-three {
+        grid-template-columns: 1fr;
+    }
+
+    .product-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

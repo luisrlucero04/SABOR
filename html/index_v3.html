@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SABOR · Escaneo inteligente de facturas v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles_v3.css">
+</head>
+<body>
+<header class="app-header">
+    <p class="brand">SABOR · v3</p>
+    <h1>Escaneo inteligente de facturas</h1>
+    <p class="subtitle">Fotografía o carga una factura. SABOR mejora la imagen, elimina visualmente el encabezado, enfoca el OCR en los productos y prepara un JSON para la futura APP de cocina.</p>
+</header>
+
+<main class="ticket">
+<section class="panel" aria-labelledby="upload-heading">
+    <div class="step-label">PASO 01</div>
+    <h2 id="upload-heading" class="panel-title">Carga o fotografía la factura</h2>
+    <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Zona para soltar archivos. Presiona Enter o Espacio para elegir archivos.">
+        <p class="drop-zone-text">Arrastra tus facturas aquí</p>
+        <p class="drop-zone-hint">o usa uno de los botones de abajo</p>
+        <div class="drop-zone-actions">
+            <button type="button" id="select-files" class="btn btn-primary">Seleccionar archivos</button>
+            <button type="button" id="take-photo" class="btn btn-secondary">Tomar foto</button>
+        </div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" multiple hidden>
+    <input type="file" id="camera-input" accept="image/*" capture="environment" hidden>
+</section>
+
+<section id="files-section" class="panel hidden" aria-labelledby="files-heading">
+    <div class="step-label">PASO 02</div>
+    <h2 id="files-heading" class="panel-title">Archivos listos para procesar</h2>
+    <div id="file-list" class="file-list"></div>
+    <div class="panel-actions">
+        <button type="button" id="clear-files" class="btn btn-ghost">Vaciar lista</button>
+        <button type="button" id="process-button" class="btn btn-primary">Procesar factura(s)</button>
+    </div>
+</section>
+
+<section id="processing-section" class="panel hidden" aria-live="polite">
+    <div class="step-label">PROCESAMIENTO</div>
+    <h2 id="processing-title" class="panel-title">Analizando...</h2>
+    <div class="progress-meta">
+        <span id="processing-status">Preparando...</span>
+        <span id="processing-counter" class="counter">0 / 0</span>
+    </div>
+    <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+    <div class="pipeline"><span>Geometría</span><span>Grises</span><span>ISODATA</span><span>Sauvola</span><span>Morfología</span><span>OCR</span><span>Segmentación</span><span>JSON</span></div>
+</section>
+
+<section id="results-section" class="panel hidden" aria-labelledby="results-heading">
+    <div class="step-label">PASOS 03 → 06</div>
+    <h2 id="results-heading" class="panel-title">Resultado, OCR y lista de productos</h2>
+    <div id="results-container" class="results-container"></div>
+</section>
+</main>
+
+<footer class="app-footer">
+    <p><strong>Procesamiento local:</strong> las imágenes se procesan en el navegador. El JSON final contiene solo los productos estructurados.</p>
+    <p class="footer-note">Nota: el OCR es una propuesta automática. Siempre revisa el texto antes de confirmar el JSON, especialmente cantidades, precios y unidades.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="escaneo_v3.js"></script>
+</body>
+</html>
