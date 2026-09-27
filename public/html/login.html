@@ -9,14 +9,12 @@
 </head>
 <body>
     <header>
-
         <a href="bienvenida.html" class="back-btn" aria-label="Volver">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 8l-4 4 4 4M16 12H8"/>
             </svg>
         </a>
-
         <div class="user-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="107" height="107" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -25,11 +23,10 @@
         </div>
     </header>
 
-
     <main class="login-container">
         <h1>Iniciar Sesión</h1>
 
-        <form class="login-form">
+        <form class="login-form" id="loginForm">
             <div class="input-group">
                 <label for="email">Correo:</label>
                 <div class="input-wrapper">
@@ -46,8 +43,10 @@
             </div>
 
             <div class="forgot-password">
-                <a href="#">Olvidó su contraseña?</a>
+                <a href="#" id="forgotPassword">Olvidó su contraseña?</a>
             </div>
+
+            <p id="mensajeError" style="color: red; text-align: center;"></p>
 
             <button type="submit" class="btn-submit">Iniciar Sesion</button>
         </form>
@@ -56,6 +55,31 @@
             <p>No tiene una cuenta registrada? <a href="../html/register.html">Crear cuenta</a></p>
         </div>
     </main>
+
+<script type="module">
+// Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+    apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
+    authDomain: "sabor-2ef5c.firebaseapp.com",
+    projectId: "sabor-2ef5c",
+    storageBucket: "sabor-2ef5c.firebasestorage.app",
+    messagingSenderId: "415510937397",
+    appId: "1:415510937397:web:4af14bde21908d72ba167c",
+    measurementId: "G-YXNDJQC9TX"
+    };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+</script>
 
 
 </body>
