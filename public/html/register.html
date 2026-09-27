@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SABOR - Registrarse</title>
     <link rel="stylesheet" href="../css/register.css">
-
     <link rel="icon" type="image/png" href="../img/Logo.png">
 </head>
 <body>
 
     <header>
-
         <a href="login.html" class="back-btn" aria-label="Volver">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/>
@@ -32,7 +31,7 @@
     <main class="register-container">
         <h1>Registro</h1>
 
-        <form class="register-form">
+        <form class="register-form" id="registerForm">
             <div class="input-group">
                 <label for="nombre">Primer Nombre:</label>
                 <input type="text" id="nombre" placeholder="Primer nombre" required>
@@ -65,6 +64,8 @@
                 </label>
             </div>
 
+            <p id="mensajeError" style="color: red; text-align: center;"></p>
+
             <button type="submit" class="btn-submit">Registrarme</button>
         </form>
 
@@ -72,6 +73,91 @@
             <p>Ya tiene una cuenta registrada? <a href="login.html">Iniciar sesión</a></p>
         </div>
     </main>
-    
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+        // Configuración del proyecto Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
+            authDomain: "sabor-2ef5c.firebaseapp.com",
+            projectId: "sabor-2ef5c",
+            storageBucket: "sabor-2ef5c.firebasestorage.app",
+            messagingSenderId: "415510937397",
+            appId: "1:415510937397:web:4af14bde21908d72ba167c",
+            measurementId: "G-YXNDJQC9TX"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const form = document.getElementById("registerForm");
+        const mensajeError = document.getElementById("mensajeError");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            mensajeError.textContent = "";
+
+            const nombre = document.getElementById("nombre").value;
+            const apellido = document.getElementById("apellido").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            // Validación: las contraseñas coinciden
+            if (password !== confirmPassword) {
+                mensajeError.textContent = "Las contraseñas no coinciden";
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // Guarda el nombre en el perfil de autenticación
+                    updateProfile(user, {
+                        displayName: `${nombre} ${apellido}`
+                    });
+
+                    // Guarda datos adicionales en Firestore
+                    return setDoc(doc(db, "usuarios", user.uid), {
+                        nombre: nombre,
+                        apellido: apellido,
+                        email: email,
+                        creadoEn: new Date()
+                    });
+                })
+                .then(() => {
+                    alert("¡Cuenta creada con éxito!");
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    let msg = "Ocurrió un error al registrarse";
+                    if (error.code === "auth/email-already-in-use") {
+                        msg = "Ya existe una cuenta con ese correo";
+                    } else if (error.code === "auth/weak-password") {
+                        msg = "La contraseña debe tener al menos 6 caracteres";
+                    } else if (error.code === "auth/invalid-email") {
+                        msg = "El correo no es válido";
+                    }
+                    mensajeError.textContent = msg;
+                });
+        });
+    </script>
 </body>
 </html>

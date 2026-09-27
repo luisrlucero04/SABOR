@@ -56,31 +56,81 @@
         </div>
     </main>
 
-<script type="module">
-// Import the functions you need from the SDKs you need
-    import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-    apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
-    authDomain: "sabor-2ef5c.firebaseapp.com",
-    projectId: "sabor-2ef5c",
-    storageBucket: "sabor-2ef5c.firebasestorage.app",
-    messagingSenderId: "415510937397",
-    appId: "1:415510937397:web:4af14bde21908d72ba167c",
-    measurementId: "G-YXNDJQC9TX"
-    };
+        // Configuración de tu proyecto Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
+            authDomain: "sabor-2ef5c.firebaseapp.com",
+            projectId: "sabor-2ef5c",
+            storageBucket: "sabor-2ef5c.firebasestorage.app",
+            messagingSenderId: "415510937397",
+            appId: "1:415510937397:web:4af14bde21908d72ba167c",
+            measurementId: "G-YXNDJQC9TX"
+        };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
 
-</script>
+        const form = document.getElementById("loginForm");
+        const mensajeError = document.getElementById("mensajeError");
 
+        // Manejo del envío del formulario de login
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            mensajeError.style.color = "red";
+            mensajeError.textContent = "";
 
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Login exitoso, redirige a tu página principal
+                    window.location.href = "inicio.html";
+                })
+                .catch((error) => {
+                    let msg = "Ocurrió un error al iniciar sesión";
+                    if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+                        msg = "Correo o contraseña incorrectos";
+                    } else if (error.code === "auth/user-not-found") {
+                        msg = "No existe una cuenta con ese correo";
+                    } else if (error.code === "auth/invalid-email") {
+                        msg = "El correo no es válido";
+                    }
+                    mensajeError.textContent = msg;
+                });
+        });
+
+        // Manejo de "Olvidó su contraseña"
+        document.getElementById("forgotPassword").addEventListener("click", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            if (!email) {
+                mensajeError.style.color = "red";
+                mensajeError.textContent = "Escribe tu correo arriba para poder enviarte el enlace";
+                return;
+            }
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    mensajeError.style.color = "green";
+                    mensajeError.textContent = "Te enviamos un correo para restablecer tu contraseña";
+                })
+                .catch(() => {
+                    mensajeError.style.color = "red";
+                    mensajeError.textContent = "No pudimos enviar el correo, revisa que esté bien escrito";
+                });
+        });
+    </script>
 </body>
 </html>
