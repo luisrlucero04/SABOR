@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View &amp; edit</title>
+  <link rel="stylesheet" href="../css/view-edit.css">
+  <link rel="icon" type="image/png" href="../img/Logo.png">
+</head>
+<body>
+  <main class="screen">
+
+    <!-- Parte superior coral -->
+    <section class="hero">
+      <!-- Botón volver -->
+      <a href="scan.html" class="back" aria-label="Volver">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="24" viewBox="0 0 36 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" fill="#fff" stroke="none"/>
+          <path d="M16 12H8M12 8l-4 4 4 4" stroke="#ff7a7a" stroke-width="2"/>
+          <path d="M22 12h13" stroke="#fff" stroke-width="2"/>
+        </svg>
+      </a>
+
+      <!-- Ola blanca -->
+      <svg class="wave" viewBox="0 0 328 90" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 32C50 14 120 6 155 38c35 44 105 54 173 17V90H0Z" fill="#fff"/>
+      </svg>
+    </section>
+
+    <!-- Contenido -->
+    <section class="content">
+      <h1>Productos detectados</h1>
+      <p>Revisa y edita los ingredientes reconocidos de tu recibo antes de guardarlos en tu despensa.</p>
+
+      <!-- Lista de productos detectados -->
+      <div class="productos">
+        <ul class="lista-productos">
+          <!-- Aquí se agregarán los productos detectados (un <li> por producto) -->
+        </ul>
+      </div>
+
+      <!-- Botón confirmar -->
+      <button type="button" class="btn">Confirmar y guardar</button>
+    </section>
+
+  </main>
+</body>
+</html>
