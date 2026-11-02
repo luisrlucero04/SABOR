@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABOR - Editar perfil</title>
+    <link rel="stylesheet" href="../css/perfil.css">
+    <link rel="icon" type="image/png" href="../img/Logo.png">
+</head>
+<body>
+    <div class="app">
+        <header class="perfil-header">
+            <a href="main.html" class="back-btn" aria-label="Volver">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 8l-4 4 4 4M16 12H8"/>
+                </svg>
+            </a>
+
+            <img src="../img/chef.png" alt="" class="chef-icon">
+
+            <!-- Curva inferior del encabezado -->
+            <svg class="wave" viewBox="0 0 360 90" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0,0 H360 V45 C335,75 285,90 235,85 C175,79 160,25 85,18 C50,15 20,20 0,28 Z" fill="#ff7b7b"/>
+            </svg>
+        </header>
+
+        <main class="contenido">
+            <form id="perfilForm" novalidate>
+                <h1>Perfil</h1>
+
+                <div class="field">
+                    <span class="label">Correo:</span>
+                    <p id="email" class="email-text">Example@hotmail.com</p>
+                </div>
+
+                <div class="field">
+                    <label for="nombre">Nombre completo:</label>
+                    <div class="field-row">
+                        <input type="text" id="nombre" placeholder="Nombre completo" readonly>
+                        <button type="button" class="edit-btn" id="editNombre" aria-label="Editar nombre">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <h2>Actualizar contraseña</h2>
+
+                <div class="field">
+                    <label for="passActual">Contraseña Actual</label>
+                    <input type="password" id="passActual" placeholder="*************" autocomplete="current-password">
+                </div>
+
+                <div class="field">
+                    <label for="passNueva">Nueva contraseña</label>
+                    <input type="password" id="passNueva" placeholder="*************" autocomplete="new-password">
+                </div>
+
+                <div class="field">
+                    <label for="passConfirmar">Confirmar contraseña:</label>
+                    <input type="password" id="passConfirmar" placeholder="*************" autocomplete="new-password">
+                </div>
+
+                <p id="mensaje" role="status"></p>
+
+                <button type="submit" class="btn-guardar" id="btnGuardar">Guardar cambios</button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            updateProfile,
+            updatePassword,
+            reauthenticateWithCredential,
+            EmailAuthProvider
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
+            authDomain: "sabor-2ef5c.firebaseapp.com",
+            projectId: "sabor-2ef5c",
+            storageBucket: "sabor-2ef5c.firebasestorage.app",
+            messagingSenderId: "415510937397",
+            appId: "1:415510937397:web:4af14bde21908d72ba167c",
+            measurementId: "G-YXNDJQC9TX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const form = document.getElementById("perfilForm");
+        const nombreInput = document.getElementById("nombre");
+        const emailInput = document.getElementById("email");
+        const passActual = document.getElementById("passActual");
+        const passNueva = document.getElementById("passNueva");
+        const passConfirmar = document.getElementById("passConfirmar");
+        const mensaje = document.getElementById("mensaje");
+        const btnGuardar = document.getElementById("btnGuardar");
+        const editNombre = document.getElementById("editNombre");
+
+        let currentUser = null;
+        let nombreOriginal = "";
+
+        function mostrar(texto, ok = false) {
+            mensaje.style.color = ok ? "green" : "red";
+            mensaje.textContent = texto;
+        }
+
+        // Carga los datos del usuario
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+            currentUser = user;
+            emailInput.textContent = user.email;
+
+            let nombreCompleto = user.displayName || "";
+            try {
+                const snap = await getDoc(doc(db, "usuarios", user.uid));
+                if (snap.exists()) {
+                    const d = snap.data();
+                    nombreCompleto = `${d.nombre || ""} ${d.apellido || ""}`.trim() || nombreCompleto;
+                }
+            } catch (err) {
+                console.error("No se pudo leer el perfil:", err);
+            }
+
+            nombreInput.value = nombreCompleto;
+            nombreOriginal = nombreCompleto;
+        });
+
+        // Lápiz: habilita la edición del nombre
+        editNombre.addEventListener("click", () => {
+            nombreInput.readOnly = false;
+            nombreInput.focus();
+            nombreInput.setSelectionRange(nombreInput.value.length, nombreInput.value.length);
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            mostrar("");
+
+            const nuevoNombre = nombreInput.value.trim().replace(/\s+/g, " ");
+            const cambioNombre = nuevoNombre !== nombreOriginal;
+            const cambioPass = passActual.value || passNueva.value || passConfirmar.value;
+
+            if (!cambioNombre && !cambioPass) {
+                mostrar("No hay cambios para guardar");
+                return;
+            }
+
+            // Validaciones
+            if (cambioNombre && !nuevoNombre) {
+                mostrar("El nombre no puede estar vacío");
+                return;
+            }
+            if (cambioPass) {
+                if (!passActual.value || !passNueva.value || !passConfirmar.value) {
+                    mostrar("Completa los tres campos para cambiar la contraseña");
+                    return;
+                }
+                if (passNueva.value.length < 6) {
+                    mostrar("La nueva contraseña debe tener al menos 6 caracteres");
+                    return;
+                }
+                if (passNueva.value !== passConfirmar.value) {
+                    mostrar("Las contraseñas nuevas no coinciden");
+                    return;
+                }
+            }
+
+            btnGuardar.disabled = true;
+
+            try {
+                // 1) Contraseña (requiere reautenticación)
+                if (cambioPass) {
+                    const credencial = EmailAuthProvider.credential(currentUser.email, passActual.value);
+                    await reauthenticateWithCredential(currentUser, credencial);
+                    await updatePassword(currentUser, passNueva.value);
+                }
+
+                // 2) Nombre: primera palabra = nombre, el resto = apellido
+                if (cambioNombre) {
+                    const partes = nuevoNombre.split(" ");
+                    const nombre = partes[0];
+                    const apellido = partes.slice(1).join(" ");
+
+                    await updateProfile(currentUser, { displayName: nuevoNombre });
+                    await setDoc(doc(db, "usuarios", currentUser.uid), {
+                        nombre: nombre,
+                        apellido: apellido
+                    }, { merge: true });
+
+                    nombreOriginal = nuevoNombre;
+                    nombreInput.readOnly = true;
+                }
+
+                passActual.value = "";
+                passNueva.value = "";
+                passConfirmar.value = "";
+                mostrar("¡Cambios guardados con éxito!", true);
+            } catch (error) {
+                let msg = "Ocurrió un error al guardar los cambios";
+                if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+                    msg = "La contraseña actual es incorrecta";
+                } else if (error.code === "auth/weak-password") {
+                    msg = "La nueva contraseña es muy débil";
+                } else if (error.code === "auth/too-many-requests") {
+                    msg = "Demasiados intentos, espera un momento e inténtalo de nuevo";
+                } else if (error.code === "auth/requires-recent-login") {
+                    msg = "Por seguridad, cierra sesión y vuelve a iniciar para hacer este cambio";
+                }
+                mostrar(msg);
+            } finally {
+                btnGuardar.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Rubik", "Segoe UI", system-ui, sans-serif;
+    background: #fff;
+    color: #2b2b2b;
+}
+
+.app {
+    max-width: 430px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: #fff;
+}
+
+/* Encabezado */
+.perfil-header {
+    position: relative;
+    height: 190px;
+    background: #ff7b7b;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+}
+
+.back-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    display: inline-flex;
+}
+
+.chef-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.wave {
+    position: absolute;
+    left: 0;
+    bottom: -89px;
+    width: 100%;
+    height: 90px;
+    display: block;
+}
+
+/* Contenido */
+.contenido {
+    padding: 70px 24px 40px;
+}
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 36px 0 20px;
+}
+
+.field {
+    margin-bottom: 22px;
+}
+
+label,
+.label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+/* Correo: solo texto, sin campo */
+.email-text {
+    font-size: 0.8rem;
+    color: #999;
+    padding-left: 6px;
+    word-break: break-all;
+}
+
+input {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: #333;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+input:focus {
+    border-color: #ff7b7b;
+    box-shadow: 0 0 0 2px rgba(255, 123, 123, 0.2);
+}
+
+/* Campos de solo lectura se ven apagados */
+input[readonly] {
+    color: #777;
+    background: #fafafa;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-btn {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.edit-btn:hover {
+    background: #f3f3f3;
+}
+
+/* Mensajes */
+#mensaje {
+    min-height: 22px;
+    text-align: center;
+    font-size: 0.9rem;
+    margin: 4px 0 12px;
+}
+
+/* Botón */
+.btn-guardar {
+    display: block;
+    width: 80%;
+    margin: 0 auto;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    background: #ff7b7b;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+}
+
+.btn-guardar:hover {
+    filter: brightness(1.05);
+}
+
+.btn-guardar:active {
+    transform: scale(0.98);
+}
+
+.btn-guardar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

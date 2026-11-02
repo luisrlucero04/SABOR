@@ -10,6 +10,14 @@
   padding: 0;
   font-family: "Sansation", sans-serif;
 }
+
+.back {
+  position: absolute;
+  top: 40px;
+  left: 24px;
+  display: inline-block;
+}
+
  
 body {
   background: #1c1c1c;

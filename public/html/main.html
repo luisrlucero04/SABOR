@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABOR - Inicio</title>
+    <link rel="stylesheet" href="../css/main_page.css">
+    <link rel="icon" type="image/png" href="../img/Logo.png">
+</head>
+<body>
+    <div class="app">
+        <header class="saludo">
+            <h1>Hola de nuevo <span id="nombreUsuario"></span>,<br>que vamos a cocinar hoy?</h1>
+        </header>
+
+        <main class="menu">
+            <!-- Inicio rápido -->
+            <a href="inicio.html" class="card card-rapido">
+                <img src="../img/check.png" alt="" class="card-icon">
+                <span class="card-label">Inicio rapido</span>
+            </a>
+
+            <!-- Ver perfil -->
+            <a href="perfil.html" class="card card-perfil">
+                <img src="../img/chef.png" alt="" class="card-icon">
+                <span class="card-label">Ver perfil</span>
+            </a>
+
+            <!-- Logout -->
+            <button type="button" class="card card-logout" id="logoutBtn" aria-label="Cerrar sesión">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </button>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWAaOMrgUMIBoF3juw8hBbsFDvOQbe8Dg",
+            authDomain: "sabor-2ef5c.firebaseapp.com",
+            projectId: "sabor-2ef5c",
+            storageBucket: "sabor-2ef5c.firebasestorage.app",
+            messagingSenderId: "415510937397",
+            appId: "1:415510937397:web:4af14bde21908d72ba167c",
+            measurementId: "G-YXNDJQC9TX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const nombreUsuario = document.getElementById("nombreUsuario");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        // Protege la página: si no hay sesión, vuelve al login
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Primero intenta con el nombre guardado en Firestore
+            let nombre = "";
+            try {
+                const snap = await getDoc(doc(db, "usuarios", user.uid));
+                if (snap.exists()) nombre = snap.data().nombre;
+            } catch (err) {
+                console.error("No se pudo leer el perfil:", err);
+            }
+
+            // Si falla, usa el displayName de Auth (primera palabra)
+            if (!nombre && user.displayName) {
+                nombre = user.displayName.split(" ")[0];
+            }
+
+            nombreUsuario.textContent = nombre;
+        });
+
+        // Cerrar sesión
+        logoutBtn.addEventListener("click", () => {
+            signOut(auth)
+                .then(() => {
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    console.error("Error al cerrar sesión:", error);
+                    alert("No pudimos cerrar la sesión, intenta de nuevo");
+                });
+        });
+    </script>
+</body>
+</html>

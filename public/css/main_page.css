@@ -1,0 +1,108 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Rubik", "Segoe UI", system-ui, sans-serif;
+    background: #ff7b7b;
+}
+
+/* Contenedor tipo móvil */
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #ff7b7b;
+}
+
+/* Saludo */
+.saludo {
+    padding: 40px 24px 36px;
+}
+
+.saludo h1 {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+/* Columna de tarjetas */
+.menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    border: none;
+    border-radius: 60px 60px 0 0;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.22);
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+    filter: brightness(1.05);
+}
+
+.card:active {
+    transform: scale(0.99);
+}
+
+/* Cada tarjeta se monta sobre la anterior */
+.card + .card {
+    margin-top: -48px;
+}
+
+.card-rapido {
+    flex: 1.1;
+    background: #eba399;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    z-index: 1;
+}
+
+.card-perfil {
+    flex: 1;
+    background: #ffa9a5;
+    padding-top: 40px;
+    padding-bottom: 60px;
+    z-index: 2;
+}
+
+.card-logout {
+    flex: 0 0 120px;
+    background: #ff7b7b;
+    padding-top: 30px;
+    z-index: 3;
+}
+
+.card-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.card-label {
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.card-logout:focus-visible,
+.card:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: -6px;
+}
