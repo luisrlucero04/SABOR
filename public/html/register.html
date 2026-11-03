@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +80,9 @@ html
         import {
             getAuth,
             createUserWithEmailAndPassword,
-            updateProfile
+            updateProfile,
+            sendEmailVerification,
+            signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
         import {
             getFirestore,
@@ -125,27 +126,26 @@ html
                 return;
             }
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
 
-                    // Guarda el nombre en el perfil de autenticación
-                    updateProfile(user, {
-                        displayName: `${nombre} ${apellido}`
-                    });
-
-                    // Guarda datos adicionales en Firestore
-                    return setDoc(doc(db, "usuarios", user.uid), {
-                        nombre: nombre,
-                        apellido: apellido,
-                        email: email,
-                        creadoEn: new Date()
-                    });
-                })
-                .then(() => {
-                    alert("¡Cuenta creada con éxito!");
-                    window.location.href = "login.html";
-                })
+                        return updateProfile(user, {
+                            displayName: `${nombre} ${apellido}`
+                        })
+                        .then(() => setDoc(doc(db, "usuarios", user.uid), {
+                            nombre: nombre,
+                            apellido: apellido,
+                            email: email,
+                            creadoEn: new Date()
+                        }))
+                        .then(() => sendEmailVerification(user))
+                        .then(() => signOut(auth));
+                    })
+                    .then(() => {
+                        alert("¡Cuenta creada! Te enviamos un enlace de verificación a " + email + ". Revisa tu bandeja (y la carpeta de spam) y verifica tu correo antes de iniciar sesión.");
+                        window.location.href = "login.html";
+                    })
                 .catch((error) => {
                     let msg = "Ocurrió un error al registrarse";
                     if (error.code === "auth/email-already-in-use") {

@@ -123,7 +123,7 @@
 
         // Carga los datos del usuario
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
+            if (!user || !user.emailVerified) {
                 window.location.href = "login.html";
                 return;
             }

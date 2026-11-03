@@ -70,7 +70,7 @@
 
         // Protege la página: si no hay sesión, vuelve al login
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
+            if (!user || !user.emailVerified) {
                 window.location.href = "login.html";
                 return;
             }

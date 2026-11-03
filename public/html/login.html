@@ -48,7 +48,12 @@
 
             <p id="mensajeError" style="color: red; text-align: center;"></p>
 
+            <p style="text-align: center;">
+                <a href="#" id="resendVerification" style="display: none;">Reenviar correo de verificación</a>
+            </p>
+
             <button type="submit" class="btn-submit">Iniciar Sesion</button>
+        
         </form>
 
         <div class="register-link">
@@ -57,13 +62,15 @@
     </main>
 
     <!-- Firebase SDK -->
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
             getAuth,
             signInWithEmailAndPassword,
-            sendPasswordResetEmail
+            sendPasswordResetEmail,
+            sendEmailVerification,
+            signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
         // Configuración de tu proyecto Firebase
@@ -84,19 +91,31 @@
 
         const form = document.getElementById("loginForm");
         const mensajeError = document.getElementById("mensajeError");
+        const resendLink = document.getElementById("resendVerification");   // 3.3
 
-        // Manejo del envío del formulario de login
+        // Manejo del envío del formulario de login                          // 3.4
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             mensajeError.style.color = "red";
             mensajeError.textContent = "";
+            resendLink.style.display = "none";
 
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Login exitoso, redirige a tu página principal
+                    const user = userCredential.user;
+
+                    // Si no verificó el correo, no lo dejamos pasar
+                    if (!user.emailVerified) {
+                        return signOut(auth).then(() => {
+                            mensajeError.textContent = "Debes verificar tu correo antes de iniciar sesión. Revisa tu bandeja de entrada (y spam).";
+                            resendLink.style.display = "block";
+                        });
+                    }
+
+                    // Verificado: flujo de siempre
                     window.location.href = "main.html";
                 })
                 .catch((error) => {
@@ -107,12 +126,14 @@
                         msg = "No existe una cuenta con ese correo";
                     } else if (error.code === "auth/invalid-email") {
                         msg = "El correo no es válido";
+                    } else if (error.code === "auth/too-many-requests") {
+                        msg = "Demasiados intentos, espera un momento e inténtalo de nuevo";
                     }
                     mensajeError.textContent = msg;
                 });
         });
 
-        // Manejo de "Olvidó su contraseña"
+        // Manejo de "Olvidó su contraseña" (sin cambios)
         document.getElementById("forgotPassword").addEventListener("click", (e) => {
             e.preventDefault();
             const email = document.getElementById("email").value;
@@ -129,6 +150,49 @@
                 .catch(() => {
                     mensajeError.style.color = "red";
                     mensajeError.textContent = "No pudimos enviar el correo, revisa que esté bien escrito";
+                });
+        });
+
+        // Reenviar correo de verificación                                   // 3.5
+        resendLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                mensajeError.style.color = "red";
+                mensajeError.textContent = "Escribe tu correo y contraseña para reenviar el enlace";
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    if (user.emailVerified) {
+                        return signOut(auth).then(() => {
+                            mensajeError.style.color = "green";
+                            mensajeError.textContent = "Tu correo ya está verificado, puedes iniciar sesión";
+                            resendLink.style.display = "none";
+                        });
+                    }
+
+                    return sendEmailVerification(user)
+                        .then(() => signOut(auth))
+                        .then(() => {
+                            mensajeError.style.color = "green";
+                            mensajeError.textContent = "Te reenviamos el enlace de verificación. Revisa tu correo.";
+                        });
+                })
+                .catch((error) => {
+                    mensajeError.style.color = "red";
+                    if (error.code === "auth/too-many-requests") {
+                        mensajeError.textContent = "Demasiados intentos, espera unos minutos e inténtalo de nuevo";
+                    } else if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+                        mensajeError.textContent = "Correo o contraseña incorrectos";
+                    } else {
+                        mensajeError.textContent = "No pudimos reenviar el correo, inténtalo de nuevo";
+                    }
                 });
         });
     </script>
